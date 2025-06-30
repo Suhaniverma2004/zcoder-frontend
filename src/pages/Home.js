@@ -6,6 +6,7 @@ import Scorecard from '../components/Scorecard';
 import NavButtons from '../components/NavButtons';
 import { useAuth } from '../context/AuthContext'; 
 import './Home.css';
+import { mainApi } from '../api';
 
 
 const Home = () => {
@@ -28,8 +29,7 @@ const Home = () => {
   const handleProfileSave = async (formData) => {
     const userId = profileData._id; 
     try {
-      const response = await axios.put(`http://localhost:5001/api/users/${userId}/profile`, formData);
-      
+      const response = await mainApi.put(`/users/${userId}/profile`, formData);
       // 2. We update the component's local state to immediately show the change.
       setProfileData(prevData => ({
         ...prevData,

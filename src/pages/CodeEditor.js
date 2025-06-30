@@ -5,6 +5,7 @@ import { python } from '@codemirror/lang-python';
 import { cpp } from '@codemirror/lang-cpp';
 import { githubDark } from '@uiw/codemirror-theme-github';
 import './CodeEditor.css';
+import { codeRunnerApi } from '../api';
 
 const languageExtensions = {
   javascript: javascript({ jsx: true }),
@@ -39,11 +40,7 @@ const CodeEditor = () => {
     setOutput('');
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/execute', { // Assuming you kept the code runner server
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ language, code }),
-      });
+     const response = await codeRunnerApi.post('/execute', { language, code });
       const result = await response.json();
       if (result.output) {
         setOutput(result.output);

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import './LoginPage.css';
+import { mainApi } from '../api';
 
 const LoginPage = () => {
   const [isLoginView, setIsLoginView] = useState(true);
@@ -24,7 +25,7 @@ const LoginPage = () => {
     
     try {
       // Make the API call to your backend server
-      const response = await axios.post(`http://localhost:5001/api/auth/${endpoint}`, payload);
+        const response = await mainApi.post(`/api/auth/${endpoint}`, payload);
 
       // --- DETAILED LOGGING FOR DEBUGGING ---
       console.log('API Response Status:', response.status);

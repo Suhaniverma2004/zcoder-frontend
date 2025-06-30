@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { socket } from '../socket';
 import axios from 'axios';
 import './ChatRoom.css';
+import { mainApi } from '../api';
 
 const currentUser = { name: 'Zcoder User' };
 
@@ -19,7 +20,7 @@ const ChatRoom = () => {
     setError('');
     const fetchProblemDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/api/problems/${problemId}`);
+        const response = await mainApi.get(`/problems/${problemId}`);
         setProblem(response.data);
       } catch (err) {
         setError("Could not load problem details.");

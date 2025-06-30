@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Leaderboard.css';
+import { mainApi } from '../api';
 
 const Leaderboard = () => {
   const [users, setUsers] = useState([]);
@@ -10,7 +11,7 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/api/leaderboard');
+        const response = await mainApi.get('/leaderboard');
         setUsers(response.data);
       } catch (err) {
         setError("Could not load leaderboard.");

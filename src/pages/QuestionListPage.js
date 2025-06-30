@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext'; // We need the user's ID
 import './QuestionListPage.css';
+import { mainApi } from '../api';
+
 
 const QuestionListPage = () => {
   const { user } = useAuth(); // Get the logged-in user
@@ -16,8 +18,8 @@ const QuestionListPage = () => {
       try {
         // Fetch both the problems and the user's existing bookmarks at the same time
         const [problemsRes, bookmarksRes] = await Promise.all([
-          axios.get('http://localhost:5001/api/problems'),
-          axios.get(`http://localhost:5001/api/bookmarks/user/${user._id}`)
+          mainApi.get('/problems'),
+          mainApi.get(`/bookmarks/user/${user._id}`)
         ]);
         
         setProblems(problemsRes.data);
@@ -37,7 +39,7 @@ const QuestionListPage = () => {
     e.stopPropagation(); // Stop the event from bubbling up to the Link
 
     try {
-      await axios.post('http://localhost:5001/api/bookmarks', {
+      await mainApi.post('/bookmarks', {
         userId: user._id,
         problemId: problemId,
       });
