@@ -25,7 +25,7 @@ const LoginPage = () => {
     
     try {
       // Make the API call to your backend server
-        const response = await mainApi.post(`/api/auth/${endpoint}`, payload);
+        const response = await mainApi.post(`/auth/${endpoint}`, payload);
 
       // --- DETAILED LOGGING FOR DEBUGGING ---
       console.log('API Response Status:', response.status);
