@@ -19,7 +19,7 @@ const Home = () => {
     const fetchUserProfile = async () => {
       if (!user?._id) return;
       try {
-        const response = await mainApi.get(`/users/${userId}`);
+        const response = await mainApi.get(`/users/${user._id}`);
 
         setProfileData({
           ...response.data,
