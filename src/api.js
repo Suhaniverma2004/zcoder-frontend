@@ -12,5 +12,3 @@ export const codeRunnerApi = axios.create({
   baseURL: CODE_RUNNER_URL
 });
 
-export const fetchProblems = () => mainApi.get('/problems');
-export const fetchLeaderboard = () => mainApi.get('/leaderboard');

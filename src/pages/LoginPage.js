@@ -23,8 +23,6 @@ const LoginPage = () => {
     const endpoint = isLoginView ? 'login' : 'signup';
     const payload = isLoginView ? { email, password } : { name, email, password };
     
-    const { success, error } = await login(email, password); // Use AuthContext's login
-
     try {
       // Make the API call to your backend server
         const response = await mainApi.post(`/api/auth/${endpoint}`, payload);
