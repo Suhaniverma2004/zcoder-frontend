@@ -19,7 +19,8 @@ const Home = () => {
     const fetchUserProfile = async () => {
       if (!user?._id) return;
       try {
-        const response = await mainApi.get(`/users/${user._id}`);
+        const response = await mainApi.get(`/users/${userId}`);
+
         setProfileData({
           ...response.data,
           image: response.data.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
