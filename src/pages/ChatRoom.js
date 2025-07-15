@@ -16,20 +16,15 @@ const ChatRoom = () => {
 
   useEffect(() => {
     const fetchProblem = async () => {
-  try {
-    const res = await mainApi.get(`/problems/${problemId}`);
-    setProblem({
-      title: res.data.title,
-      description: res.data.description || 'Join the discussion about this problem!'
-    });
-  } catch (err) {
-    setError("Could not load problem details. Chat functionality may be limited.");
-    setProblem({
-      title: `Problem ${problemId}`,
-      description: 'General discussion'
-    });
-  }
-}});
+      try {
+        const res = await mainApi.get(`/problems/${problemId}`);
+        setProblem(res.data);
+      } catch (err) {
+        setError("Could not load problem details.");
+      }
+    };
+    fetchProblem();
+  }, [problemId]);
 
   useEffect(() => {
     socket.connect();
@@ -49,45 +44,16 @@ const ChatRoom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  useEffect(() => {
-  const onConnectError = (err) => {
-    console.error('Socket connection error:', err);
-    setError('Realtime connection issue. Messages may be delayed.');
-  };
-
-  socket.on('connect_error', onConnectError);
-  return () => {
-    socket.off('connect_error', onConnectError);
-  };
-}, []);
-
   const handleSend = (e) => {
-  e.preventDefault();
-  if (!newMessage.trim()) return;
-
-  const tempId = Date.now();
-  const tempMessage = {
-    _id: tempId,
-    user: user?.name || 'Zcoder User',
-    text: newMessage,
-    timestamp: new Date(),
-    isTemp: true
+    e.preventDefault();
+    if (!newMessage.trim()) return;
+    socket.emit('sendMessage', {
+      room: problemId,
+      user: user?.name || 'Zcoder User',
+      text: newMessage,
+    });
+    setNewMessage('');
   };
-
-  setMessages(prev => [...prev, tempMessage]);
-  setNewMessage('');
-
-  socket.emit('sendMessage', {
-    room: problemId,
-    user: user?.name || 'Zcoder User',
-    text: newMessage,
-  }, (ack) => {
-    if (ack.error) {
-      setError('Failed to send message');
-      setMessages(prev => prev.filter(m => m._id !== tempId));
-    }
-  });
-};
 
   return (
     <div className="page-container chat-room-container">
