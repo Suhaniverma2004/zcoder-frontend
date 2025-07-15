@@ -15,8 +15,8 @@ const QuestionListPage = () => {
       if (!user) return;
       try {
         const [problemsRes, bookmarksRes] = await Promise.all([
-          mainApi.get('/problems'),
-          mainApi.get(`/bookmarks/user/${user._id}`)
+          mainApi.get('/api/problems'),
+          mainApi.get(`/api/bookmarks/user/${user._id}`)
         ]);
         setProblems(problemsRes.data);
         setBookmarkedIds(new Set(bookmarksRes.data.map(b => b.problem._id)));

@@ -10,7 +10,7 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const res = await mainApi.get('/leaderboard');
+        const res = await mainApi.get('/api/leaderboard');
         setUsers(res.data);
       } catch (err) {
         console.error(err);
