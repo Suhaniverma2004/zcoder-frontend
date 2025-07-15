@@ -4,7 +4,8 @@ const MAIN_API_URL = process.env.REACT_APP_MAIN_API_URL || 'https://zcoder-main-
 const CODE_RUNNER_URL = process.env.REACT_APP_CODE_RUNNER_URL || 'https://zcoder-backend-djw6.onrender.com';
 
 export const mainApi = axios.create({
-  baseURL: MAIN_API_URL
+  baseURL: MAIN_API_URL,
+ withCredentials: true
 });
 
 export const codeRunnerApi = axios.create({

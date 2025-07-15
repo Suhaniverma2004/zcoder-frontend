@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './Leaderboard.css';
 import { mainApi } from '../api';
+import './Leaderboard.css';
 
 const Leaderboard = () => {
   const [users, setUsers] = useState([]);
@@ -11,22 +10,19 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
-        const response = await mainApi.get('/leaderboard');
-        setUsers(response.data);
-      } catch (err) {
-        setError("Could not load leaderboard.");
+        const res = await mainApi.get('/api/users/leaderboard');
+        setUsers(res.data);
+      } catch {
+        setError('Could not load leaderboard.');
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
     fetchLeaderboardData();
   }, []);
 
-  if (isLoading) {
-    return <div className="page-container"><p>Loading leaderboard...</p></div>;
-  }
-  if (error) {
-    return <div className="page-container"><p className="error-message-text">{error}</p></div>;
-  }
+  if (isLoading) return <div className="page-container"><p>Loading leaderboard...</p></div>;
+  if (error) return <div className="page-container"><p className="error-message-text">{error}</p></div>;
 
   return (
     <div className="page-container">
@@ -34,17 +30,14 @@ const Leaderboard = () => {
       <p>Top performers on the Zcoder platform.</p>
       <div className="leaderboard-table">
         <div className="leaderboard-header">
-          <span>Rank</span>
-          <span>User</span>
-          <span>Questions Solved</span>
-          <span>Total Score</span>
+          <span>Rank</span><span>User</span><span>Questions Solved</span><span>Total Score</span>
         </div>
-        {users.map((user, index) => (
-          <div key={user._id} className="leaderboard-row">
-            <span className="rank">{index + 1}</span>
-            <span className="user-name">{user.name}</span>
-            <span className="solved-count">{user.solvedCount}</span>
-            <span className="total-score">{user.totalScore}</span>
+        {users.map((u, i) => (
+          <div key={u._id} className="leaderboard-row">
+            <span className="rank">{i + 1}</span>
+            <span className="user-name">{u.name}</span>
+            <span className="solved-count">{u.solvedCount}</span>
+            <span className="total-score">{u.totalScore}</span>
           </div>
         ))}
         {users.length === 0 && <p>No users found on the leaderboard yet.</p>}

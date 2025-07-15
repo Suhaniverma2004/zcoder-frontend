@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-// We can reuse the same CSS as QuestionListPage
+import { mainApi } from '../api'; // Use your configured axios instance
 import './QuestionListPage.css'; 
 
 const BookmarksPage = () => {
@@ -15,19 +14,25 @@ const BookmarksPage = () => {
     if (!user) return;
     const fetchBookmarks = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/api/bookmarks/user/${user._id}`);
+        const response = await mainApi.get(`/api/bookmarks/user/${user._id}`);
         setBookmarks(response.data);
       } catch (err) {
         console.error("Failed to fetch bookmarks:", err);
         setError("Could not load your bookmarks. Please try again later.");
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
     fetchBookmarks();
   }, [user]);
 
-  if (isLoading) return <div className="page-container"><p>Loading your bookmarks...</p></div>;
-  if (error) return <div className="page-container"><p className="error-message-text">{error}</p></div>;
+  if (isLoading) {
+    return <div className="page-container"><p>Loading your bookmarks...</p></div>;
+  }
+
+  if (error) {
+    return <div className="page-container"><p className="error-message-text">{error}</p></div>;
+  }
 
   return (
     <div className="page-container">

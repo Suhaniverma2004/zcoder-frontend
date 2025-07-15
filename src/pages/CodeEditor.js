@@ -4,8 +4,8 @@ import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
 import { cpp } from '@codemirror/lang-cpp';
 import { githubDark } from '@uiw/codemirror-theme-github';
-import './CodeEditor.css';
 import { codeRunnerApi } from '../api';
+import './CodeEditor.css';
 
 const languageExtensions = {
   javascript: javascript({ jsx: true }),
@@ -21,7 +21,7 @@ const initialCode = {
 
 const CodeEditor = () => {
   const [language, setLanguage] = useState('javascript');
-  const [code, setCode] = useState(initialCode[language]);
+  const [code, setCode] = useState(initialCode.javascript);
   const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,24 +40,20 @@ const CodeEditor = () => {
     setOutput('');
     setIsLoading(true);
     try {
-     const response = await codeRunnerApi.post('/execute', { language, code });
-      const result = await response.json();
-      if (result.output) {
-        setOutput(result.output);
-      } else {
-        setOutput('Execution finished with no output or an error occurred.');
-      }
-    } catch (error) {
+      const res = await codeRunnerApi.post('/api/execute', { language, code });
+      setOutput(res.data.output || 'Execution finished with no output.');
+    } catch (err) {
       setOutput('Failed to connect to the execution server.');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
     <div className="page-container code-editor-page">
       <div className="editor-controls">
-        <h1>Multi-Language Playground</h1>
-        <div className='controls-right'>
+        <h1>Multi‑Language Playground</h1>
+        <div className="controls-right">
           <select value={language} onChange={handleLanguageChange} className="language-selector">
             <option value="javascript">JavaScript</option>
             <option value="python">Python</option>
@@ -69,16 +65,13 @@ const CodeEditor = () => {
         </div>
       </div>
       <div className="editor-layout">
-        <div className="editor-panel">
-          <CodeMirror
-            value={code}
-            height="100%"
-            theme={githubDark}
-            extensions={[languageExtensions[language]]}
-            onChange={onChange}
-            className="codemirror-instance"
-          />
-        </div>
+        <CodeMirror
+          value={code}
+          height="100%"
+          theme={githubDark}
+          extensions={[languageExtensions[language]]}
+          onChange={onChange}
+        />
         <div className="output-panel">
           <div className="output-header">Output</div>
           <pre className="output-content">
