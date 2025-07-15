@@ -18,7 +18,7 @@ const Home = () => {
     const fetchUserProfile = async () => {
       if (!user?._id) return;
       try {
-        const response = await mainApi.get(`/users/${user._id}`);
+        const response = await mainApi.get(`/api/users/${user._id}`);
         setProfileData({
           ...response.data,
           image: response.data.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
@@ -36,7 +36,7 @@ const Home = () => {
 
   const handleProfileSave = async (formData) => {
     try {
-      const response = await mainApi.put(`/users/${user._id}/profile`, formData);
+      const response = await mainApi.put(`/api/users/${user._id}/profile`, formData);
       setProfileData(prev => ({
         ...prev,
         ...response.data,
