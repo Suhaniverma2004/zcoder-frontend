@@ -3,25 +3,34 @@ import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
 import { cpp } from '@codemirror/lang-cpp';
+import { java } from '@codemirror/lang-java';
+import { php } from '@codemirror/lang-php';
+import { markdown } from '@codemirror/lang-markdown';
 import { githubDark } from '@uiw/codemirror-theme-github';
-import { codeRunnerApi } from '../api';
 import './CodeEditor.css';
+import { codeRunnerApi } from '../api';
 
 const languageExtensions = {
   javascript: javascript({ jsx: true }),
   python: python(),
   cpp: cpp(),
+  java: java(),
+  php: php(),
+  markdown: markdown()
 };
 
 const initialCode = {
-  javascript: `// Zcoder JavaScript Playground\nconsole.log("Hello, World!");`,
-  python: `# Zcoder Python Playground\nprint("Hello, World!")`,
-  cpp: `// Zcoder C++ Playground\n#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!";\n    return 0;\n}`,
+  javascript: `// JavaScript\nconsole.log("Hello, World!");`,
+  python: `# Python\nprint("Hello, World!")`,
+  cpp: `// C++\n#include <iostream>\nint main() {\n  std::cout << "Hello, World!";\n  return 0;\n}`,
+  java: `// Java\npublic class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}`,
+  php: `<?php\necho "Hello, World!";\n?>`,
+  markdown: `# Hello, Markdown!\nWrite your notes here...`
 };
 
 const CodeEditor = () => {
   const [language, setLanguage] = useState('javascript');
-  const [code, setCode] = useState(initialCode.javascript);
+  const [code, setCode] = useState(initialCode[language]);
   const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,24 +49,26 @@ const CodeEditor = () => {
     setOutput('');
     setIsLoading(true);
     try {
-      const res = await codeRunnerApi.post('/api/execute', { language, code });
-      setOutput(res.data.output || 'Execution finished with no output.');
-    } catch (err) {
+      const response = await codeRunnerApi.post('/execute', { language, code });
+      setOutput(response.data.output || 'No output or an error occurred.');
+    } catch (error) {
       setOutput('Failed to connect to the execution server.');
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (
     <div className="page-container code-editor-page">
       <div className="editor-controls">
-        <h1>Multi‑Language Playground</h1>
+        <h1>Multi-Language Playground</h1>
         <div className="controls-right">
           <select value={language} onChange={handleLanguageChange} className="language-selector">
             <option value="javascript">JavaScript</option>
             <option value="python">Python</option>
             <option value="cpp">C++</option>
+            <option value="java">Java</option>
+            <option value="php">PHP</option>
+            <option value="markdown">Markdown</option>
           </select>
           <button onClick={handleRunCode} className="run-button" disabled={isLoading}>
             {isLoading ? 'Executing...' : '▶ Run'}
@@ -65,13 +76,16 @@ const CodeEditor = () => {
         </div>
       </div>
       <div className="editor-layout">
-        <CodeMirror
-          value={code}
-          height="100%"
-          theme={githubDark}
-          extensions={[languageExtensions[language]]}
-          onChange={onChange}
-        />
+        <div className="editor-panel">
+          <CodeMirror
+            value={code}
+            height="100%"
+            theme={githubDark}
+            extensions={[languageExtensions[language]]}
+            onChange={onChange}
+            className="codemirror-instance"
+          />
+        </div>
         <div className="output-panel">
           <div className="output-header">Output</div>
           <pre className="output-content">

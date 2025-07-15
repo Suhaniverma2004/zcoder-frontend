@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { mainApi } from '../api';
 import './QuestionListPage.css';
+import { mainApi } from '../api';
 
 const QuestionListPage = () => {
   const { user } = useAuth();
@@ -11,20 +11,19 @@ const QuestionListPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
     const fetchData = async () => {
+      if (!user) return;
       try {
         const [problemsRes, bookmarksRes] = await Promise.all([
-          mainApi.get('/api/problems'),
-          mainApi.get(`/api/bookmarks/user/${user._id}`)
+          mainApi.get('/problems'),
+          mainApi.get(`/bookmarks/user/${user._id}`)
         ]);
         setProblems(problemsRes.data);
         setBookmarkedIds(new Set(bookmarksRes.data.map(b => b.problem._id)));
       } catch (error) {
         console.error('Failed to fetch data:', error);
-      } finally {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
     fetchData();
   }, [user]);
@@ -33,13 +32,13 @@ const QuestionListPage = () => {
     e.preventDefault();
     e.stopPropagation();
     try {
-      await mainApi.post('/api/bookmarks', {
+      await mainApi.post('/bookmarks', {
         userId: user._id,
-        problemId
+        problemId: problemId,
       });
       setBookmarkedIds(prev => new Set(prev).add(problemId));
     } catch (error) {
-      console.error('Failed to add bookmark:', error.response?.data?.message || error.message);
+      console.error('Failed to add bookmark:', error);
     }
   };
 
@@ -48,9 +47,9 @@ const QuestionListPage = () => {
   return (
     <div className="page-container">
       <h1>DSA Problem Discussions</h1>
-      <p>Select a problem to join the chat, or click the bookmark to save it for later.</p>
+      <p>Select a problem to join the chat, or bookmark it to revisit later.</p>
       <div className="question-list">
-        {problems.map(problem => (
+        {problems.map((problem) => (
           <Link key={problem._id} to={`/chatroom/${problem.problemId}`} className="question-link-card">
             <div className="question-info">
               <h3>{problem.title}</h3>

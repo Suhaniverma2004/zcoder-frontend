@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { socket } from '../socket';
-import { mainApi } from '../api';
+import { useAuth } from '../context/AuthContext';
 import './ChatRoom.css';
+import { mainApi } from '../api';
 
 const ChatRoom = () => {
+  const { user } = useAuth();
   const { problemId } = useParams();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
@@ -13,23 +15,24 @@ const ChatRoom = () => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    setError('');
-    const fetchProblemDetails = async () => {
+    const fetchProblem = async () => {
       try {
-        const res = await mainApi.get(`/api/problems/${problemId}`);
+        const res = await mainApi.get(`/problems/${problemId}`);
         setProblem(res.data);
-      } catch {
-        setError('Could not load problem details.');
+      } catch (err) {
+        setError("Could not load problem details.");
       }
     };
-    if (problemId) fetchProblemDetails();
+    fetchProblem();
   }, [problemId]);
 
   useEffect(() => {
     socket.connect();
-    socket.on('previousMessages', setMessages);
-    socket.on('receiveMessage', msg => setMessages(prev => [...prev, msg]));
-    if (problemId) socket.emit('joinRoom', { problemId });
+    socket.emit('joinRoom', { problemId });
+
+    socket.on('previousMessages', (msgs) => setMessages(msgs));
+    socket.on('receiveMessage', (msg) => setMessages(prev => [...prev, msg]));
+
     return () => {
       socket.off('previousMessages');
       socket.off('receiveMessage');
@@ -41,43 +44,41 @@ const ChatRoom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = (e) => {
-    e?.preventDefault();
+  const handleSend = (e) => {
+    e.preventDefault();
     if (!newMessage.trim()) return;
-    socket.emit('sendMessage', { room: problemId, user: 'Zcoder User', text: newMessage });
+    socket.emit('sendMessage', {
+      room: problemId,
+      user: user?.name || 'Zcoder User',
+      text: newMessage,
+    });
     setNewMessage('');
   };
 
-  if (error) return <div className="page-container"><h1 className="error-message-text">{error}</h1></div>;
-
   return (
     <div className="page-container chat-room-container">
-      {!problem ? <h1>Loading Problem...</h1> : (
-        <div className="problem-header">
-          <h1>{problem.title}</h1>
-          <p>{problem.description}</p>
-        </div>
-      )}
+      <div className="problem-header">
+        {error && <h1 className="error-message-text">{error}</h1>}
+        {problem && <><h1>{problem.title}</h1><p>{problem.description}</p></>}
+      </div>
+
       <div className="chat-window">
         <div className="message-list">
           {messages.map(msg => (
-            <div key={msg._id} className={`message-bubble ${msg.user === 'Zcoder User' ? 'my-message' : 'other-message'}`}>
-              <div className="message-content">
-                <strong>{msg.user}</strong>
-                <p>{msg.text}</p>
-                <span className="timestamp">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-              </div>
+            <div key={msg._id} className={`message-bubble ${msg.user === (user?.name || 'Zcoder User') ? 'my-message' : 'other-message'}`}>
+              <strong>{msg.user}</strong>
+              <p>{msg.text}</p>
+              <span className="timestamp">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
           ))}
           <div ref={chatEndRef} />
         </div>
-        <form className="message-input-form" onSubmit={handleSendMessage}>
+        <form className="message-input-form" onSubmit={handleSend}>
           <input
             type="text"
-            placeholder="Type your message... (Press Enter to send)"
+            placeholder="Type your message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage(e)}
           />
           <button type="submit" disabled={!newMessage.trim()}>Send ➤</button>
         </form>

@@ -1,78 +1,74 @@
-import React, { useState, useRef } from 'react'; // 'useEffect' has been removed from this line
-import axios from 'axios';
+import React, { useState, useRef, useEffect } from 'react';
 import ProfileForm from '../components/ProfileForm';
 import UserInfoCard from '../components/UserInfoCard';
 import Scorecard from '../components/Scorecard';
 import NavButtons from '../components/NavButtons';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
 import './Home.css';
 import { mainApi } from '../api';
 
-
 const Home = () => {
-  // --- THE FIX IS HERE ---
-  // 1. We now get the 'updateUser' function from our context.
-  const { user, updateUser } = useAuth(); 
-
-  const [profileData, setProfileData] = useState({
-    ...user,
-    image: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
-    scoreData: {
-      solved: user?.solvedCount || 0,
-      totalScore: user?.totalScore || 0,
-    }
-  });
-  
+  const { user, updateUser } = useAuth();
+  const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef(null);
 
+  // 🛠️ Fetch latest profile from backend (optional but useful)
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user?._id) return;
+      try {
+        const response = await mainApi.get(`/users/${user._id}`);
+        setProfileData({
+          ...response.data,
+          image: response.data.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+          scoreData: {
+            solved: response.data.solvedCount || 0,
+            totalScore: response.data.totalScore || 0
+          }
+        });
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+      }
+    };
+    fetchUserProfile();
+  }, [user]);
+
   const handleProfileSave = async (formData) => {
-    const userId = profileData._id; 
     try {
-      const response = await mainApi.put(`/users/${userId}/profile`, formData);
-      // 2. We update the component's local state to immediately show the change.
-      setProfileData(prevData => ({
-        ...prevData,
-        ...response.data
+      const response = await mainApi.put(`/users/${user._id}/profile`, formData);
+      setProfileData(prev => ({
+        ...prev,
+        ...response.data,
+        scoreData: {
+          solved: response.data.solvedCount || 0,
+          totalScore: response.data.totalScore || 0
+        }
       }));
-
-      // 3. We call our new function to update the GLOBAL state in the context.
       updateUser(response.data);
-
       setIsEditing(false);
     } catch (error) {
-      console.error("Failed to update profile: ", error);
-      alert('Failed to save profile. Please check the console for details.');
+      console.error("Failed to update profile:", error);
+      alert('Failed to save profile. Please check console.');
     }
   };
 
   const handleImageClick = () => {
     if (fileInputRef.current) {
-        fileInputRef.current.click();
+      fileInputRef.current.click();
     }
   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const newImageUrl = URL.createObjectURL(file);
-      setProfileData(prevData => ({ ...prevData, image: newImageUrl }));
+      const imageURL = URL.createObjectURL(file);
+      setProfileData(prev => ({ ...prev, image: imageURL }));
     }
   };
-  if (!profileData || !profileData._id) {
-    return <div className="page-container"><h1>Loading Profile...</h1></div>;
-  }
 
-  if (isEditing) {
-    return (
-      <div className="page-container">
-        <ProfileForm
-          initialData={profileData}
-          onSave={handleProfileSave}
-          onCancel={() => setIsEditing(false)}
-        />
-      </div>
-    );
+  if (!profileData) {
+    return <div className="page-container"><h2>Loading profile...</h2></div>;
   }
 
   return (
@@ -82,26 +78,34 @@ const Home = () => {
         style={{ display: 'none' }}
         ref={fileInputRef}
         onChange={handleFileChange}
-        accept="image/png, image/jpeg, image/gif"
+        accept="image/png, image/jpeg, image/jpg"
       />
-      
-      <div className="home-dashboard">
-        <header className="home-header">
-          <NavButtons />
-        </header>
-        <div className="home-content-grid">
-          <div className="main-content">
-            <Scorecard scoreData={profileData.scoreData} />
+
+      {isEditing ? (
+        <ProfileForm
+          initialData={profileData}
+          onSave={handleProfileSave}
+          onCancel={() => setIsEditing(false)}
+        />
+      ) : (
+        <div className="home-dashboard">
+          <header className="home-header">
+            <NavButtons />
+          </header>
+          <div className="home-content-grid">
+            <div className="main-content">
+              <Scorecard scoreData={profileData.scoreData} />
+            </div>
+            <aside className="right-sidebar">
+              <UserInfoCard
+                userData={profileData}
+                onEdit={() => setIsEditing(true)}
+                onImageClick={handleImageClick}
+              />
+            </aside>
           </div>
-          <aside className="right-sidebar">
-            <UserInfoCard
-              userData={profileData}
-              onEdit={() => setIsEditing(true)}
-              onImageClick={handleImageClick}
-            />
-          </aside>
         </div>
-      </div>
+      )}
     </div>
   );
 };
