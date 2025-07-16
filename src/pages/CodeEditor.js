@@ -52,7 +52,7 @@ const CodeEditor = () => {
     }
     setIsLoading(true);
     try {
-      const res = await codeRunnerApi.post('/execute', { language, code });
+      const res = await codeRunnerApi.post('/api/execute', { language, code });
       setOutput(res.data.output || 'No output or an error occurred.');
     } catch {
       setOutput('Failed to connect to execution server.');
