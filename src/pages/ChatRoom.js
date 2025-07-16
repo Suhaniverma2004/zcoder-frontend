@@ -68,7 +68,10 @@ const ChatRoom = () => {
             <div key={msg._id} className={`message-bubble ${msg.user === (user?.name || 'Zcoder User') ? 'my-message' : 'other-message'}`}>
               <strong>{msg.user}</strong>
               <p>{msg.text}</p>
-              <span className="timestamp">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              <span className="timestamp">
+- {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
++ {new Date(msg.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+</span>
             </div>
           ))}
           <div ref={chatEndRef} />

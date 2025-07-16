@@ -16,16 +16,16 @@ const languageExtensions = {
   cpp: cpp(),
   java: java(),
   php: php(),
-  markdown: markdown()
+  markdown: markdown(),
 };
 
 const initialCode = {
-  javascript: `// JavaScript\nconsole.log("Hello, World!");`,
-  python: `# Python\nprint("Hello, World!")`,
-  cpp: `// C++\n#include <iostream>\nint main() {\n  std::cout << "Hello, World!";\n  return 0;\n}`,
-  java: `// Java\npublic class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}`,
+  javascript: `console.log("Hello, World!");`,
+  python: `print("Hello, World!")`,
+  cpp: `#include <iostream>\nint main() {\n  std::cout << "Hello, World!";\n  return 0;\n}`,
+  java: `public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}`,
   php: `<?php\necho "Hello, World!";\n?>`,
-  markdown: `# Hello, Markdown!\nWrite your notes here...`
+  markdown: `# Hello\nThis is a markdown document.`,
 };
 
 const CodeEditor = () => {
@@ -35,9 +35,9 @@ const CodeEditor = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLanguageChange = (e) => {
-    const newLang = e.target.value;
-    setLanguage(newLang);
-    setCode(initialCode[newLang]);
+    const lang = e.target.value;
+    setLanguage(lang);
+    setCode(initialCode[lang]);
     setOutput('');
   };
 
@@ -46,13 +46,16 @@ const CodeEditor = () => {
   }, []);
 
   const handleRunCode = async () => {
-    setOutput('');
+    if (language === 'markdown') {
+      setOutput('Markdown is not executable.');
+      return;
+    }
     setIsLoading(true);
     try {
-      const response = await codeRunnerApi.post('/execute', { language, code });
-      setOutput(response.data.output || 'No output or an error occurred.');
-    } catch (error) {
-      setOutput('Failed to connect to the execution server.');
+      const res = await codeRunnerApi.post('/execute', { language, code });
+      setOutput(res.data.output || 'No output or an error occurred.');
+    } catch {
+      setOutput('Failed to connect to execution server.');
     }
     setIsLoading(false);
   };
@@ -60,37 +63,32 @@ const CodeEditor = () => {
   return (
     <div className="page-container code-editor-page">
       <div className="editor-controls">
-        <h1>Multi-Language Playground</h1>
+        <h1>Code Playground</h1>
         <div className="controls-right">
-          <select value={language} onChange={handleLanguageChange} className="language-selector">
-            <option value="javascript">JavaScript</option>
-            <option value="python">Python</option>
-            <option value="cpp">C++</option>
-            <option value="java">Java</option>
-            <option value="php">PHP</option>
-            <option value="markdown">Markdown</option>
+          <select value={language} onChange={handleLanguageChange}>
+            {Object.keys(languageExtensions).map((lang) => (
+              <option key={lang} value={lang}>{lang.toUpperCase()}</option>
+            ))}
           </select>
-          <button onClick={handleRunCode} className="run-button" disabled={isLoading}>
-            {isLoading ? 'Executing...' : '▶ Run'}
+          <button onClick={handleRunCode} disabled={isLoading}>
+            {isLoading ? 'Running...' : '▶ Run'}
           </button>
         </div>
       </div>
-      <div className="editor-layout">
-        <div className="editor-panel">
+
+      <div className="editor-layout" style={{ display: 'flex', height: '70vh' }}>
+        <div className="editor-panel" style={{ flex: 1, marginRight: '10px' }}>
           <CodeMirror
             value={code}
             height="100%"
             theme={githubDark}
             extensions={[languageExtensions[language]]}
             onChange={onChange}
-            className="codemirror-instance"
           />
         </div>
-        <div className="output-panel">
-          <div className="output-header">Output</div>
-          <pre className="output-content">
-            {isLoading ? 'Running...' : (output || <span className="no-output">Click "Run" to see the output.</span>)}
-          </pre>
+        <div className="output-panel" style={{ flex: 1, backgroundColor: '#111', color: '#fff', padding: '10px' }}>
+          <h3>Output</h3>
+          <pre>{output || 'Click "Run" to see the output.'}</pre>
         </div>
       </div>
     </div>

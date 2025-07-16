@@ -14,7 +14,7 @@ const BookmarksPage = () => {
     if (!user) return;
     const fetchBookmarks = async () => {
       try {
-        const response = await mainApi.get(`/api/bookmarks/user/${user._id}`);
+        const response = await mainApi.get(`/bookmarks/user/${user._id}`);
         setBookmarks(response.data);
       } catch (err) {
         console.error("Failed to fetch bookmarks:", err);
