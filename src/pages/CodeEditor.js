@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef,  useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
@@ -6,7 +6,7 @@ import { cpp } from '@codemirror/lang-cpp';
 import { java } from '@codemirror/lang-java';
 import { githubDark } from '@uiw/codemirror-theme-github';
 import './CodeEditor.css';
-import { mainApi, codeRunnerApi } from '../api';
+import { codeRunnerApi } from '../api';
 
 const languageExtensions = {
   javascript: javascript({ jsx: true }),
@@ -27,6 +27,7 @@ const CodeEditor = () => {
   const [code, setCode] = useState(initialCode[language]);
   const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
     setLanguage(lang);
@@ -39,6 +40,10 @@ const CodeEditor = () => {
   }, []);
 
   const handleRunCode = async () => {
+    if (language === 'markdown') {
+      setOutput('Markdown is not executable.');
+      return;
+    }
     setIsLoading(true);
     try {
       const res = await codeRunnerApi.post('/api/execute', { language, code });
@@ -48,8 +53,6 @@ const CodeEditor = () => {
     }
     setIsLoading(false);
   };
-  
-
 
   return (
     <div className="page-container code-editor-page">
@@ -97,7 +100,6 @@ const CodeEditor = () => {
         </div>
       </div>
     </div>
-    
   );
 };
 
