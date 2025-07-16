@@ -59,12 +59,22 @@ const CodeEditor = () => {
       <div className="editor-controls">
         <h1>Code Playground</h1>
         <div className="controls-right">
-          <select value={language} onChange={handleLanguageChange}>
+          <select
+            className="language-selector"
+            value={language}
+            onChange={handleLanguageChange}
+          >
             {Object.keys(languageExtensions).map((lang) => (
-              <option key={lang} value={lang}>{lang.toUpperCase()}</option>
+              <option key={lang} value={lang}>
+                {lang.toUpperCase()}
+              </option>
             ))}
           </select>
-          <button onClick={handleRunCode} disabled={isLoading}>
+          <button
+            className="run-button"
+            onClick={handleRunCode}
+            disabled={isLoading}
+          >
             {isLoading ? 'Running...' : '▶ Run'}
           </button>
         </div>
@@ -72,17 +82,21 @@ const CodeEditor = () => {
 
       <div className="editor-layout">
         <div className="editor-panel">
-          <CodeMirror
-            value={code}
-            height="100%"
-            theme={githubDark}
-            extensions={[languageExtensions[language]]}
-            onChange={onChange}
-          />
+          <div className="codemirror-instance">
+            <CodeMirror
+              value={code}
+              height="100%"
+              theme={githubDark}
+              extensions={[languageExtensions[language]]}
+              onChange={onChange}
+            />
+          </div>
         </div>
-        <div className="output-panel" >
-          <h3>Output</h3>
-          <pre>{output || 'Click "Run" to see the output.'}</pre>
+        <div className="output-panel">
+          <div className="output-header">Output</div>
+          <div className="output-content">
+            {output ? <pre>{output}</pre> : <div className="no-output">Click "Run" to see the output.</div>}
+          </div>
         </div>
       </div>
     </div>

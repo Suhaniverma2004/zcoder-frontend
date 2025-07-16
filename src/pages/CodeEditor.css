@@ -1,8 +1,13 @@
+* {
+  box-sizing: border-box;
+}
+
 .code-editor-page {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 120px); 
 }
+
 .editor-controls {
   display: flex;
   justify-content: space-between;
@@ -10,24 +15,28 @@
   margin-bottom: 1rem;
   flex-shrink: 0;
 }
+
 .editor-controls h1 {
-    text-align: left !important;
-    margin: 0 !important;
+  text-align: left !important;
+  margin: 0 !important;
 }
+
 .controls-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
+
 .language-selector {
-    padding: 0.7rem;
-    background-color: #34495e;
-    color: #ecf0f1;
-    border: 1px solid #4a6a85;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 1rem;
+  padding: 0.7rem;
+  background-color: #34495e;
+  color: #ecf0f1;
+  border: 1px solid #4a6a85;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
 }
+
 .run-button {
   background-color: #27ae60;
   color: white;
@@ -42,16 +51,19 @@
   gap: 0.5rem;
   transition: all 0.2s ease;
 }
+
 .run-button:hover {
   background-color: #229954;
   transform: translateY(-2px);
 }
+
 .editor-layout {
   display: flex;
   gap: 1.5rem;
   flex-grow: 1;
   overflow: hidden;
 }
+
 .editor-panel, .output-panel {
   width: 50%;
   display: flex;
@@ -61,12 +73,15 @@
   border: 1px solid #34495e;
   overflow: hidden;
 }
+
 .codemirror-instance, .cm-editor {
-    height: 100%;
+  height: 100%;
 }
+
 .cm-editor {
   text-align: left;
 }
+
 .output-header {
   padding: 0.75rem 1rem;
   background-color: #34495e;
@@ -74,6 +89,7 @@
   color: #ecf0f1;
   flex-shrink: 0;
 }
+
 .output-content {
   padding: 1rem;
   flex-grow: 1;
@@ -81,10 +97,11 @@
   font-family: 'Fira Code', 'Courier New', Courier, monospace;
   font-size: 0.9rem;
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-word;
   text-align: left;
   color: #ecf0f1;
 }
+
 .no-output {
   color: #7f8c8d;
   font-style: italic;
