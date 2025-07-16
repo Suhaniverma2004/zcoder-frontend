@@ -4,8 +4,6 @@ import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
 import { cpp } from '@codemirror/lang-cpp';
 import { java } from '@codemirror/lang-java';
-import { php } from '@codemirror/lang-php';
-import { markdown } from '@codemirror/lang-markdown';
 import { githubDark } from '@uiw/codemirror-theme-github';
 import './CodeEditor.css';
 import { codeRunnerApi } from '../api';
@@ -15,8 +13,6 @@ const languageExtensions = {
   python: python(),
   cpp: cpp(),
   java: java(),
-  php: php(),
-  markdown: markdown(),
 };
 
 const initialCode = {
@@ -24,8 +20,6 @@ const initialCode = {
   python: `print("Hello, World!")`,
   cpp: `#include <iostream>\nint main() {\n  std::cout << "Hello, World!";\n  return 0;\n}`,
   java: `public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}`,
-  php: `<?php\necho "Hello, World!";\n?>`,
-  markdown: `# Hello\nThis is a markdown document.`,
 };
 
 const CodeEditor = () => {
@@ -76,8 +70,8 @@ const CodeEditor = () => {
         </div>
       </div>
 
-      <div className="editor-layout" style={{ display: 'flex', height: '70vh' }}>
-        <div className="editor-panel" style={{ flex: 1, marginRight: '10px' }}>
+      <div className="editor-layout">
+        <div className="editor-panel">
           <CodeMirror
             value={code}
             height="100%"
@@ -86,7 +80,7 @@ const CodeEditor = () => {
             onChange={onChange}
           />
         </div>
-        <div className="output-panel" style={{ flex: 1, backgroundColor: '#111', color: '#fff', padding: '10px' }}>
+        <div className="output-panel" >
           <h3>Output</h3>
           <pre>{output || 'Click "Run" to see the output.'}</pre>
         </div>
