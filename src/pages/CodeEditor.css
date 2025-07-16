@@ -106,29 +106,3 @@
   color: #7f8c8d;
   font-style: italic;
 }
-.output-panel {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #1e272e;
-  color: #ecf0f1;
-  border-radius: 8px;
-  font-family: monospace;
-}
-
-.test-results {
-  margin-top: 1rem;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.test-results table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.test-results th, .test-results td {
-  border: 1px solid #4a5568;
-  padding: 0.5rem;
-  text-align: left;
-  font-family: monospace;
-}
