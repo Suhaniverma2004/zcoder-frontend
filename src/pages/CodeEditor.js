@@ -22,12 +22,39 @@ const initialCode = {
   java: `public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}`,
 };
 
-const CodeEditor = () => {
+const CodeEditor = ({ problemId }) => {
   const [language, setLanguage] = useState('javascript');
   const [code, setCode] = useState(initialCode[language]);
   const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const saveTimeout = useRef(null);
 
+    useEffect(() => {
+    const fetchCode = async () => {
+      try {
+        const res = await mainApi.get(`/user-code/${problemId}`);
+        if (res.data) {
+          setCode(res.data.code);
+          setLanguage(res.data.language);
+        } else {
+          setCode(initialCode[language]);
+        }
+      } catch {
+        setCode(initialCode[language]);
+      }
+    };
+    if (problemId) fetchCode();
+  }, [problemId]);
+
+  useEffect(() => {
+    if (!problemId) return;
+    clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => {
+      mainApi.post('/user-code/save', { problemId, code, language });
+    }, 2000);
+    return () => clearTimeout(saveTimeout.current);
+  }, [code, language]);
+  
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
     setLanguage(lang);
@@ -40,10 +67,6 @@ const CodeEditor = () => {
   }, []);
 
   const handleRunCode = async () => {
-    if (language === 'markdown') {
-      setOutput('Markdown is not executable.');
-      return;
-    }
     setIsLoading(true);
     try {
       const res = await codeRunnerApi.post('/api/execute', { language, code });
@@ -53,6 +76,7 @@ const CodeEditor = () => {
     }
     setIsLoading(false);
   };
+  
 
   return (
     <div className="page-container code-editor-page">

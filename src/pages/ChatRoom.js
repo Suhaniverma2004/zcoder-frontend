@@ -108,4 +108,7 @@ const ChatRoom = () => {
   );
 };
 
+{typingUser && (
+  <div className="typing-indicator">{typingUser} is typing...</div>
+)};
 export default ChatRoom;
