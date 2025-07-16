@@ -27,25 +27,6 @@ const CodeEditor = () => {
   const [code, setCode] = useState(initialCode[language]);
   const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-    const fetchCode = async () => {
-      try {
-        const res = await mainApi.get(`/user-code/${problemId}`);
-        if (res.data) {
-          setCode(res.data.code);
-          setLanguage(res.data.language);
-        } else {
-          setCode(initialCode[language]);
-        }
-      } catch {
-        setCode(initialCode[language]);
-      }
-    };
-    if (problemId) fetchCode();
-  }, [problemId]);
-
-
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
     setLanguage(lang);
