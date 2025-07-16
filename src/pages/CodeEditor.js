@@ -45,14 +45,6 @@ const CodeEditor = () => {
     if (problemId) fetchCode();
   }, [problemId]);
 
-  useEffect(() => {
-    if (!problemId) return;
-    clearTimeout(saveTimeout.current);
-    saveTimeout.current = setTimeout(() => {
-      mainApi.post('/user-code/save', { problemId, code, language });
-    }, 2000);
-    return () => clearTimeout(saveTimeout.current);
-  }, [code, language]);
 
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
