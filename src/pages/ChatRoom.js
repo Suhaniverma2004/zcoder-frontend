@@ -69,8 +69,7 @@ const ChatRoom = () => {
               <strong>{msg.user}</strong>
               <p>{msg.text}</p>
               <span className="timestamp">
-- {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-+ {new Date(msg.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+    {new Date(msg.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
 </span>
             </div>
           ))}
