@@ -59,22 +59,39 @@ const ChatRoom = () => {
     <div className="page-container chat-room-container">
       <div className="problem-header">
         {error && <h1 className="error-message-text">{error}</h1>}
-        {problem && <><h1>{problem.title}</h1><p>{problem.description}</p></>}
+        {problem && (
+          <>
+            <h1>{problem.title}</h1>
+            <p>{problem.description}</p>
+          </>
+        )}
       </div>
 
       <div className="chat-window">
         <div className="message-list">
-          {messages.map(msg => (
-            <div key={msg._id} className={`message-bubble ${msg.user === (user?.name || 'Zcoder User') ? 'my-message' : 'other-message'}`}>
-              <strong>{msg.user}</strong>
-              <p>{msg.text}</p>
-              <span className="timestamp">
-    {new Date(msg.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-</span>
+          {messages.map((msg) => (
+            <div
+              key={msg._id}
+              className={`message-bubble ${
+                msg.user === (user?.name || 'Zcoder User') ? 'my-message' : 'other-message'
+              }`}
+            >
+              <div className="message-content">
+                <span className="message-text">
+                  <strong>{msg.user}:</strong> {msg.text}
+                </span>
+                <span className="timestamp">
+                  {new Date(msg.timestamp || Date.now()).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </span>
+              </div>
             </div>
           ))}
           <div ref={chatEndRef} />
         </div>
+
         <form className="message-input-form" onSubmit={handleSend}>
           <input
             type="text"
@@ -82,7 +99,9 @@ const ChatRoom = () => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />
-          <button type="submit" disabled={!newMessage.trim()}>Send ➤</button>
+          <button type="submit" disabled={!newMessage.trim()}>
+            Send ➤
+          </button>
         </form>
       </div>
     </div>
