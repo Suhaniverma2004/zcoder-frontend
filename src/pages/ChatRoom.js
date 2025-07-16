@@ -13,6 +13,7 @@ const ChatRoom = () => {
   const [problem, setProblem] = useState(null);
   const [error, setError] = useState('');
   const chatEndRef = useRef(null);
+  const [typingUser, setTypingUser] = useState(null);
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -32,6 +33,10 @@ const ChatRoom = () => {
 
     socket.on('previousMessages', (msgs) => setMessages(msgs));
     socket.on('receiveMessage', (msg) => setMessages(prev => [...prev, msg]));
+  socket.on('userTyping', (data) => {
+  setTypingUser(data.user);
+  setTimeout(() => setTypingUser(null), 3000); // clears after 3s
+  });
 
     return () => {
       socket.off('previousMessages');
@@ -39,6 +44,12 @@ const ChatRoom = () => {
       socket.disconnect();
     };
   }, [problemId]);
+
+  {typingUser && (
+  <div className="typing-indicator">
+    {typingUser} is typing...
+  </div>
+)}
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -107,8 +118,4 @@ const ChatRoom = () => {
     </div>
   );
 };
-
-{typingUser && (
-  <div className="typing-indicator">{typingUser} is typing...</div>
-)};
 export default ChatRoom;

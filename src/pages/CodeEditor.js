@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useRef,  useCallback } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
@@ -6,7 +6,7 @@ import { cpp } from '@codemirror/lang-cpp';
 import { java } from '@codemirror/lang-java';
 import { githubDark } from '@uiw/codemirror-theme-github';
 import './CodeEditor.css';
-import { codeRunnerApi } from '../api';
+import { mainApi, codeRunnerApi } from '../api';
 
 const languageExtensions = {
   javascript: javascript({ jsx: true }),
@@ -54,7 +54,7 @@ const CodeEditor = ({ problemId }) => {
     }, 2000);
     return () => clearTimeout(saveTimeout.current);
   }, [code, language]);
-  
+
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
     setLanguage(lang);
