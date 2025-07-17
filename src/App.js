@@ -38,7 +38,6 @@ const AppLayout = () => {
           <Route path="/chat" element={<ProtectedRoute><QuestionListPage /></ProtectedRoute>} />
           <Route path="/chatroom/:problemId" element={<ProtectedRoute><ChatRoom /></ProtectedRoute>} />
           <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-          <Route path="/code/:problemId" element={<CodeEditorLayout />} />
         </Routes>
       </main>
     </>
