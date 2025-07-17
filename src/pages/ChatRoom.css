@@ -130,7 +130,7 @@
 .code-problem-panel {
   flex: 1;
   padding: 20px;
-  background-color: #414142;
+  background-color: #282c34;
   border-radius: 10px;
   overflow-y: auto;
   max-height: 80vh;
