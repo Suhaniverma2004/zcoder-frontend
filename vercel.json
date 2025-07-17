@@ -6,6 +6,12 @@
     },
     {
       "source": "/api/:match*",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-requested-with"
+        }
+      ],
       "destination": "https://zcoder-main-backend.onrender.com/api/:match*"
     }
   ]
