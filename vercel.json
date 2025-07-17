@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/execute",
+      "destination": "https://zcoder-backend-djw6.onrender.com/api/execute"
+    },
+    {
+      "source": "/api/:match*",
+      "destination": "https://zcoder-main-backend.onrender.com/api/:match*"
+    }
+  ]
+}
