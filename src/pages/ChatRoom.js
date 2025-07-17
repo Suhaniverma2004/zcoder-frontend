@@ -4,7 +4,7 @@ import { socket } from '../socket';
 import { useAuth } from '../context/AuthContext';
 import './ChatRoom.css';
 import { mainApi } from '../api';
-import CodeEditor from '../components/CodeEditor/CodeEditor';
+import CodeEditor from '../pages/CodeEditor';
 
 const ChatRoom = () => {
   const { user } = useAuth();
