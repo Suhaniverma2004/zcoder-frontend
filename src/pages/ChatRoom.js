@@ -64,12 +64,7 @@ const ChatRoom = () => {
 
   return (
     <div className="page-container chat-room-container">
-      {/* Navigation Buttons */}
-      <div className="chatroom-nav-buttons">
-        <button onClick={() => setActiveTab('chat')}>💬 Chat</button>
-        <button onClick={() => setActiveTab('bookmarks')}>🔖 Bookmarks</button>
-        <button onClick={() => setActiveTab('code')}>💻 Code</button>
-      </div>
+     
 
       {activeTab === 'chat' && (
         <>
