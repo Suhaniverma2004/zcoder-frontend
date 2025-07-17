@@ -69,3 +69,18 @@ color: #f1c40f; /* A gold color for bookmarked items */
 .bookmark-btn.bookmarked:hover {
 color: #f39c12;
 }
+.meta-btn {
+  margin-left: 8px;
+  padding: 6px 12px;
+  background-color: #2d72d9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.meta-btn:hover {
+  background-color: #1a56b2;
+}

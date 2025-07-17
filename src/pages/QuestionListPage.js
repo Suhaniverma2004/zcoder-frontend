@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './QuestionListPage.css';
 import { mainApi } from '../api';
@@ -9,6 +9,7 @@ const QuestionListPage = () => {
   const [problems, setProblems] = useState([]);
   const [bookmarkedIds, setBookmarkedIds] = useState(new Set());
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,15 +43,31 @@ const QuestionListPage = () => {
     }
   };
 
+  const handleJoinChatClick = (e, problemId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/chatroom/${problemId}`);
+  };
+
+  const handleCodeClick = (e, problemId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/code/${problemId}`);
+  };
+
   if (isLoading) return <div className="page-container"><p>Loading questions...</p></div>;
 
   return (
     <div className="page-container">
       <h1>DSA Problem Discussions</h1>
-      <p>Select a problem to join the chat, or bookmark it to revisit later.</p>
+      <p>Select a problem to solve or join the discussion.</p>
       <div className="question-list">
         {problems.map((problem) => (
-          <Link key={problem._id} to={`/chatroom/${problem.problemId}`} className="question-link-card">
+          <div
+            key={problem._id}
+            className="question-link-card"
+            onClick={() => navigate(`/code/${problem.problemId}`)}
+          >
             <div className="question-info">
               <h3>{problem.title}</h3>
               <p className="question-topic">{problem.topic}</p>
@@ -64,9 +81,14 @@ const QuestionListPage = () => {
               >
                 🔖
               </button>
-              <span className="join-chat-link">Join Chat</span>
+              <button className="meta-btn" onClick={(e) => handleJoinChatClick(e, problem.problemId)}>
+                🚀 Join Chat
+              </button>
+              <button className="meta-btn" onClick={(e) => handleCodeClick(e, problem.problemId)}>
+                💻 Code
+              </button>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>
