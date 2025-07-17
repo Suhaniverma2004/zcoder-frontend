@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
@@ -40,15 +40,12 @@ const CodeEditor = () => {
   }, []);
 
   const handleRunCode = async () => {
-    if (language === 'markdown') {
-      setOutput('Markdown is not executable.');
-      return;
-    }
     setIsLoading(true);
     try {
       const res = await codeRunnerApi.post('/api/execute', { language, code });
       setOutput(res.data.output || 'No output or an error occurred.');
-    } catch {
+    } catch (error) {
+      console.error(error);
       setOutput('Failed to connect to execution server.');
     }
     setIsLoading(false);
