@@ -1,7 +1,7 @@
 .problem-sidebar {
   width: 250px;
   background-color: #1f2d3d;
-  color: #ecf0f1;
+  color: #0fb1d9;
   padding: 1rem;
   border-right: 1px solid #34495e;
 }
@@ -44,7 +44,7 @@
   cursor: pointer;
   flex: 1;
   padding-right: 10px;
-  color: #ffffff;
+  color: #950e0e;
 }
 
 .problem-buttons {
