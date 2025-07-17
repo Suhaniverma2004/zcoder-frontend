@@ -34,3 +34,50 @@
   background-color: #3498db;
   font-weight: bold;
 }
+.problem-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.problem-title {
+  cursor: pointer;
+  flex: 1;
+  padding-right: 10px;
+  color: #ffffff;
+}
+
+.problem-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.sidebar-btn {
+  padding: 4px 8px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
+  color: #fff;
+  background-color: #007bff;
+  transition: background-color 0.2s;
+}
+
+.sidebar-btn:hover {
+  background-color: #0056b3;
+}
+
+.code-btn {
+  background-color: #28a745;
+}
+
+.code-btn:hover {
+  background-color: #1e7e34;
+}
+
+.join-chat-btn {
+  background-color: #17a2b8;
+}
+
+.join-chat-btn:hover {
+  background-color: #117a8b;
+}
