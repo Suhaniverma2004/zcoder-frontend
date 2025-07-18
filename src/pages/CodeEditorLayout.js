@@ -1,29 +1,38 @@
+// src/pages/CodeEditorLayout.js
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import CodeEditor from './CodeEditor'; // ✅ Fixed import
-import { mainApi } from '../api'; // ✅ Correct path to api.js
+import { mainApi } from '../api';
+import CodeEditor from './CodeEditor';
 import './CodeEditorLayout.css';
 
 const CodeEditorLayout = () => {
-  const { id } = useParams();
-  const [question, setQuestion] = useState(null);
+  const { problemId } = useParams();
+  const [problem, setProblem] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchQuestion = async () => {
-      const res = await mainApi.get(`/problems/${id}`);
-      setQuestion(res.data);
+    const fetchProblem = async () => {
+      try {
+        const res = await mainApi.get(`/problems/${problemId}`);
+        setProblem(res.data);
+      } catch (err) {
+        setError('Failed to load problem');
+      }
     };
-    fetchQuestion();
-  }, [id]);
+    fetchProblem();
+  }, [problemId]);
+
+  if (error) return <div>{error}</div>;
+  if (!problem) return <div>Loading...</div>;
 
   return (
     <div className="code-layout">
-      <div className="question-panel">
-        <h2>{question?.title}</h2>
-        <p>{question?.description}</p>
+      <div className="code-problem-panel">
+        <h2>{problem.title}</h2>
+        <p>{problem.description}</p>
       </div>
-      <div className="editor-panel">
-        <CodeEditor problemId={id} />
+      <div className="code-editor-panel">
+        <CodeEditor problemId={problemId} />
       </div>
     </div>
   );

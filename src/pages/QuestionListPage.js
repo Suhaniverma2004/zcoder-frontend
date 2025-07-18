@@ -57,7 +57,7 @@ const QuestionListPage = () => {
       <p>Select a problem to join the chat, or bookmark it to revisit later.</p>
       <div className="question-list">
         {problems.map((problem) => (
-          <div key={problem._id} className="question-link-card" onClick={() => navigate(`/chatroom/${problem.problemId}`)}>
+          <div key={problem._id} className="question-link-card" onClick={() => navigate(`/code/${problem._id}`)}>
             <div className="question-info">
               <h3>{problem.title}</h3>
               <p className="question-topic">{problem.topic}</p>
