@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import CodeEditor from './pages/CodeEditor';
-import { mainApi } from './api';
+import { mainApi } from '../api';
 import './CodeEditorLayout.css';
-import ProblemDetails from '../components/ProblemDetails';
-
 const CodeEditorLayout = () => {
   const { id } = useParams();
   const [question, setQuestion] = useState(null);
