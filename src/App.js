@@ -11,6 +11,8 @@ import Leaderboard from './pages/Leaderboard';
 import LoginPage from './pages/LoginPage';
 import QuestionListPage from './pages/QuestionListPage';
 import ChatRoom from './pages/ChatRoom';
+import CodeEditorLayout from './pages/CodeEditorLayout';
+
 
 // This correctly imports the hook for our new context.
 import { useAuth } from './context/AuthContext';
