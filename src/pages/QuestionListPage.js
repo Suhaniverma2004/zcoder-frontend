@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './QuestionListPage.css';
 import { mainApi } from '../api';
@@ -9,6 +9,7 @@ const QuestionListPage = () => {
   const [problems, setProblems] = useState([]);
   const [bookmarkedIds, setBookmarkedIds] = useState(new Set());
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +43,12 @@ const QuestionListPage = () => {
     }
   };
 
+  const handleCodeClick = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/code/${id}`);
+  };
+
   if (isLoading) return <div className="page-container"><p>Loading questions...</p></div>;
 
   return (
@@ -50,13 +57,15 @@ const QuestionListPage = () => {
       <p>Select a problem to join the chat, or bookmark it to revisit later.</p>
       <div className="question-list">
         {problems.map((problem) => (
-          <div key={problem._id} className="question-link-card">
-            <Link to={`/code/${problem.problemId}`} className="question-info">
+          <div key={problem._id} className="question-link-card" onClick={() => navigate(`/chatroom/${problem.problemId}`)}>
+            <div className="question-info">
               <h3>{problem.title}</h3>
               <p className="question-topic">{problem.topic}</p>
-            </Link>
+            </div>
             <div className="question-meta">
               <span className={`difficulty-tag ${problem.difficulty.toLowerCase()}`}>{problem.difficulty}</span>
+
+              {/* Bookmark Button */}
               <button
                 className={`bookmark-btn ${bookmarkedIds.has(problem._id) ? 'bookmarked' : ''}`}
                 onClick={(e) => handleBookmarkClick(problem._id, e)}
@@ -64,8 +73,18 @@ const QuestionListPage = () => {
               >
                 🔖
               </button>
-              <Link to={`/chatroom/${problem.problemId}`} className="join-chat-link">🚀 Join Chat</Link>
-              <Link to={`/code/${problem.problemId}`} className="code-link">💻 Code</Link>
+
+              {/* Join Chat Button */}
+              <span className="join-chat-link">Join Chat</span>
+
+              {/* Code Button */}
+              <button
+                className="code-btn"
+                onClick={(e) => handleCodeClick(e, problem._id)}
+                title="Solve Now"
+              >
+                Code
+              </button>
             </div>
           </div>
         ))}
